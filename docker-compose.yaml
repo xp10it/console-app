@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      - 'POSTGRES_PASSWORD=rootPWD3!'
+      - 'POSTGRES_DB=users'
+    ports:
+      - 5444:5432
