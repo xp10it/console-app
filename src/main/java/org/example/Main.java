@@ -1,7 +1,24 @@
 package org.example;
 
+import org.example.models.Item;
+import org.example.repositories.ItemRepository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Main {
     public static void main(String[] args) {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("javax.persistence.jdbc.user", "postgres");
+        properties.put("javax.persistence.jdbc.password", "rootPWD3!");
+
+        EntityManager em = Persistence.createEntityManagerFactory("main_ctx", properties)
+                .createEntityManager();
+
+        ItemRepository repo = new ItemRepository(em);
+
         boolean isRunning = true;
 
         while(isRunning) {
@@ -23,7 +40,21 @@ public class Main {
 
             if (input.equals("-q")) {
                 isRunning = false;
+            } else {
+                Item item = new Item();
+                item.setTitle(input);
+
+                item = repo.insert(item);
+
+                System.out.println("Saved item " + item.getId() + " " + item.getTitle());
+                System.out.println("All item");
+
+                for (Item i : repo.selectAll()) {
+                    System.out.println(i.getTitle());
+                }
             }
         }
+
+        em.close();
     }
 }
